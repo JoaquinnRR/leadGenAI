@@ -351,23 +351,56 @@ app.post("/api/leads/search", async (req, res) => {
   res.json({ leads, isSimulated: resultIsSimulated });
 });
 
+function getCustomUseCases(industry: string): string[] {
+  const ind = industry.toLowerCase();
+  if (ind.includes("dent") || ind.includes("odont") || ind.includes("clinic") || ind.includes("medic") || ind.includes("salud")) {
+    return [
+      "Agente de IA para Agendamiento: Chatbot en WhatsApp que gestiona citas y cancelaciones, y sincroniza automáticamente con el software de la clínica.",
+      "Respuestas de Tratamientos con IA: Respuestas instantáneas automáticas sobre costos de ortodoncia, implantes y seguros dentales comunes.",
+      "Recordatorios Preventivos Inteligentes: Notificación automática con IA para invitar a limpiezas semestrales basándose en la última visita."
+    ];
+  }
+  if (ind.includes("notar") || ind.includes("abog") || ind.includes("legal") || ind.includes("estudio") || ind.includes("jurid")) {
+    return [
+      "Lectura y Clasificación de Escrituras con IA: OCR inteligente para clasificar contratos y pre-validar documentos requeridos para trámites.",
+      "Asistente de Consultas Legales Frecuentes: Chatbot entrenado con reglamentación local para responder dudas de trámites, precios y firmas.",
+      "Generador de Borradores Automatizados: Herramienta que toma datos del cliente y redacta borradores de mandatos o declaraciones automáticas."
+    ];
+  }
+  if (ind.includes("rest") || ind.includes("comid") || ind.includes("cafe") || ind.includes("delivery") || ind.includes("bar")) {
+    return [
+      "Toma de Pedidos por WhatsApp con IA: Chatbot inteligente que procesa pedidos, sugiere agregados y despacha directamente a cocina.",
+      "Gestor de Reservas de Mesas: Agente conversacional que confirma mesas y gestiona tiempos de espera automáticamente según afluencia.",
+      "Recomendador de Menú Dinámico: IA que sugiere platos basados en compras anteriores, clima y hora del día en redes sociales."
+    ];
+  }
+  return [
+    `Asistente Digital en WhatsApp: Captación de consultas y automatización de respuestas sobre servicios de ${industry} las 24 horas del día.`,
+    `Fidelización Inteligente: Sistema de recordatorios automatizados o recomendaciones personalizadas para clientes recurrentes de ${industry}.`,
+    `Optimización de Operaciones locales: Implementación de flujos basados en IA para agendar y gestionar citas, cotizaciones o consultas en el rubro.`
+  ];
+}
+
 app.post("/api/leads/analyze", async (req, res) => {
   const { lead } = req.body;
   if (!lead) return res.status(400).json({ error: "Lead data is required" });
 
   try {
-    const prompt = `Analiza este prospecto de negocio para servicios de IA y desarrollo web:
+    const prompt = `Eres el Agente Especialista en Oportunidades de Inteligencia Artificial de Browns Studio. 
+    Tu objetivo es analizar un prospecto de negocio local en Chile/Latinoamérica y detectar oportunidades hiper-concretas de aplicación de Inteligencia Artificial y automatización.
+    
+    Datos del Prospecto:
     Nombre: ${lead.name}
-    Industria: ${lead.industry}
+    Rubro/Industria: ${lead.industry}
     Ubicación: ${lead.location}
     Estado Digital: ${lead.status === 'no_website' ? 'Sin sitio web' : 'Sitio web antiguo'}
     
-    Genera:
-    1. Un análisis de por qué necesitan IA o una nueva web.
-    2. Tres casos de uso de IA específicos para su industria.
-    3. Tres tendencias de mercado actuales para esta industria específicamente en Chile o Latinoamérica.
-    4. Referencia genérica a 3 tipos de competidores locales que ya podrían estar usando tecnología (ej: franquicias grandes, apps de delivery, etc).
-    5. Un "pitch" de ventas de 2 párrafos convincente en español.
+    Genera el siguiente análisis detallado y estructurado:
+    1. Un diagnóstico de por qué necesitan implementar tecnología e IA urgentemente (basado en su rubro y ubicación).
+    2. Tres casos de uso de IA específicos e implementables para su rubro (por ejemplo: si es dentista, un chatbot IA para agendar y resolver dudas de tratamientos; si es notaría, un lector de documentos con IA para pre-aprobar escrituras; etc.). Cada caso debe ser descriptivo, comercial y de alto impacto.
+    3. Tres tendencias tecnológicas/IA específicas del mercado latinoamericano para este rubro.
+    4. Tres tipos de competidores locales que ya usan tecnología para captar clientes en su zona.
+    5. Un "pitch" de ventas de 2 párrafos muy convincente, amigable y profesional en español de Chile, ofreciendo desarrollar estas soluciones llave en mano.
     
     Responde en formato JSON:
     {
@@ -420,11 +453,7 @@ app.post("/api/leads/analyze", async (req, res) => {
     // Beautiful, detailed, custom local fallback generator to bypass 503 errors seamlessly
     const fallbackResult = {
       analysis: `Para ${lead.name} (${lead.industry}), la presencia digital y la agilidad de atención en ${lead.location} son fundamentales hoy en día. Al encontrarse con un estado digital de '${lead.status === 'no_website' ? 'Sin sitio web' : 'Sitio web legacy'}', existe un gran potencial para automatizar procesos y modernizar su canal de captación de clientes locales, aprovechando tecnologías de IA y diseño adaptativo de última generación.`,
-      useCases: [
-        `Asistente Digital en WhatsApp: Captación de consultas y automatización de respuestas sobre servicios de ${lead.industry} las 24 horas del día.`,
-        `Fidelización Inteligente: Sistema de recordatorios automatizados o recomendaciones personalizadas para clientes recurrentes.`,
-        `Optimización de Operaciones locales: Implementación de flujos basados en IA para agendar y gestionar citas, cotizaciones o consultas de forma automatizada.`
-      ],
+      useCases: getCustomUseCases(lead.industry),
       marketTrends: [
         `Crecimiento exponencial de búsquedas locales "cerca de mí" y posicionamiento geolocalizado en Chile y Latinoamérica para el rubro de ${lead.industry}.`,
         `Adopción masiva de canales conversacionales automáticos para mejorar la experiencia antes y después del servicio.`,

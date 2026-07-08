@@ -2270,6 +2270,40 @@ export default function App() {
                           </span>
 
                           <div className="space-y-3">
+                            {/* Servicios Ofrecidos */}
+                            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col gap-2.5 shadow-sm text-left">
+                              <div>
+                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+                                  Servicios Adicionales
+                                </span>
+                                <span className="text-[10px] font-semibold text-slate-500 block mt-1">
+                                  Servicios extra cotizados
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5 mt-1">
+                                {selectedLead.offeredServices && selectedLead.offeredServices.length > 0 ? (
+                                  selectedLead.offeredServices.map((srvId) => {
+                                    const srv = ADDITIONAL_SERVICES.find((s) => s.id === srvId);
+                                    if (!srv) return null;
+                                    return (
+                                      <span
+                                        key={srvId}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-black"
+                                        title={srv.description}
+                                      >
+                                        <span>{srv.emoji}</span>
+                                        <span>{srv.name}</span>
+                                      </span>
+                                    );
+                                  })
+                                ) : (
+                                  <span className="text-[11px] italic text-slate-400">
+                                    Ninguno cotizado. Edita la propuesta para añadir servicios.
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
                             {/* CRM Dropdown */}
                             <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col gap-2.5 shadow-sm">
                               <div>
@@ -2313,40 +2347,6 @@ export default function App() {
                               </div>
                               <div className="flex">
                                 <StatusBadge status={selectedLead.status} large />
-                              </div>
-                            </div>
-
-                            {/* Servicios Ofrecidos */}
-                            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col gap-2.5 shadow-sm text-left">
-                              <div>
-                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block leading-none">
-                                  Servicios Adicionales
-                                </span>
-                                <span className="text-[10px] font-semibold text-slate-500 block mt-1">
-                                  Servicios extra cotizados
-                                </span>
-                              </div>
-                              <div className="flex flex-wrap gap-1.5 mt-1">
-                                {selectedLead.offeredServices && selectedLead.offeredServices.length > 0 ? (
-                                  selectedLead.offeredServices.map((srvId) => {
-                                    const srv = ADDITIONAL_SERVICES.find((s) => s.id === srvId);
-                                    if (!srv) return null;
-                                    return (
-                                      <span
-                                        key={srvId}
-                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-black"
-                                        title={srv.description}
-                                      >
-                                        <span>{srv.emoji}</span>
-                                        <span>{srv.name}</span>
-                                      </span>
-                                    );
-                                  })
-                                ) : (
-                                  <span className="text-[11px] italic text-slate-400">
-                                    Ninguno cotizado. Edita la propuesta para añadir servicios.
-                                  </span>
-                                )}
                               </div>
                             </div>
                           </div>
