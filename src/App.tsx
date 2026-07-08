@@ -1013,13 +1013,10 @@ export default function App() {
       );
     })
     .sort((a, b) => {
-      // Prioritize old_tech (Web Básica) first
-      if (a.status === "old_tech" && b.status !== "old_tech") return -1;
-      if (a.status !== "old_tech" && b.status === "old_tech") return 1;
-      // Then optimized (since user says sin web are more complex)
-      if (a.status === "optimized" && b.status === "no_website") return -1;
-      if (a.status === "no_website" && b.status === "optimized") return 1;
-      return 0;
+      const score = { no_website: 3, old_tech: 2, optimized: 1 };
+      const scoreA = score[a.status] || 0;
+      const scoreB = score[b.status] || 0;
+      return scoreB - scoreA;
     });
 
   const visibleLeads = currentLeads.slice(0, visibleLeadsCount);
@@ -1989,7 +1986,7 @@ export default function App() {
                     className="bg-white rounded-[48px] border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] p-10 lg:sticky lg:top-24 mb-10"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10 pb-8 border-b border-slate-100/80 items-stretch">
-                      <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+                      <div className="lg:col-span-7 flex flex-col justify-start space-y-5">
                         <div>
                           <div className="flex flex-wrap items-center gap-2 mb-3">
                             <span className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider leading-none border border-indigo-100/55 flex items-center gap-1.5 shadow-xs">
@@ -2249,13 +2246,13 @@ export default function App() {
 
                           <div className="space-y-3">
                             {/* CRM Dropdown */}
-                            <div className="bg-white border border-slate-100 rounded-xl p-3 flex items-center justify-between shadow-xs">
+                            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col gap-2.5 shadow-sm">
                               <div>
                                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block leading-none">
                                   Fase CRM
                                 </span>
                                 <span className="text-[10px] font-semibold text-slate-500 block mt-1">
-                                  Actualizar estado
+                                  Actualizar estado de venta
                                 </span>
                               </div>
                               <select
@@ -2265,7 +2262,7 @@ export default function App() {
                                     crmStatus: e.target.value as any,
                                   })
                                 }
-                                className="bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition cursor-pointer"
+                                className="w-full bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition cursor-pointer"
                               >
                                 <option value="new">🆕 Nuevo</option>
                                 <option value="wait">
@@ -2280,16 +2277,18 @@ export default function App() {
                             </div>
 
                             {/* Tech Maturity */}
-                            <div className="bg-white border border-slate-100 rounded-xl p-3 flex items-center justify-between shadow-xs">
+                            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col gap-2.5 shadow-sm">
                               <div>
                                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block leading-none">
                                   Madurez Tech
                                 </span>
                                 <span className="text-[10px] font-semibold text-slate-500 block mt-1">
-                                  Estado escaneado
+                                  Estado escaneado del sitio web
                                 </span>
                               </div>
-                              <StatusBadge status={selectedLead.status} large />
+                              <div className="flex">
+                                <StatusBadge status={selectedLead.status} large />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -2806,6 +2805,64 @@ export default function App() {
                         )}
 
                         <section>
+                          <div className="relative mb-8">
+                            <div className="absolute -inset-4 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-rose-500/10 rounded-[48px] blur-2xl"></div>
+                            <div className="relative p-10 bg-[#1A1C1E] rounded-[40px] shadow-2xl overflow-hidden">
+                              <div className="absolute top-0 right-0 p-8 opacity-10">
+                                <Sparkles className="w-24 h-24 text-white" />
+                              </div>
+                              <h4 className="flex items-center gap-3 text-indigo-400 font-bold text-sm mb-6 uppercase tracking-widest">
+                                <Sparkles className="w-4 h-4" /> Propuesta
+                                Ganadora
+                              </h4>
+                              <div className="relative z-10">
+                                <p className="text-white text-xl font-medium leading-relaxed mb-10 pl-6 border-l-2 border-indigo-500/50 italic opacity-90">
+                                  "{activeAnalysis?.pitch}"
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                  <button
+                                    onClick={() => {
+                                      if (activeAnalysis?.pitch) {
+                                        setOriginalPitchText(
+                                          activeAnalysis.pitch,
+                                        );
+                                        setEditedPitchText(
+                                          activeAnalysis.pitch,
+                                        );
+                                        setIsPitchModalOpen(true);
+                                      }
+                                    }}
+                                    type="button"
+                                    className="flex-1 py-4 bg-white text-slate-900 rounded-2xl font-black text-sm uppercase tracking-wider hover:bg-slate-100 transition shadow-xl active:scale-95 flex items-center justify-center gap-3 group"
+                                  >
+                                    <Mail className="w-5 h-5 group-hover:scale-110 transition" />{" "}
+                                    Copiar para Email
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setIsPdfModalOpen(true);
+                                    }}
+                                    type="button"
+                                    className="flex-1 py-4 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white rounded-2xl font-black text-sm uppercase tracking-wider transition shadow-xl active:scale-95 flex items-center justify-center gap-3 group cursor-pointer"
+                                  >
+                                    <FileDown className="w-5 h-5 group-hover:scale-110 transition" />{" "}
+                                    Reporte PDF Cliente
+                                  </button>
+                                  <div className="flex gap-4">
+                                    <button className="p-4 bg-slate-800 text-white rounded-2xl hover:bg-slate-700 transition active:scale-95">
+                                      <Database className="w-5 h-5" />
+                                    </button>
+                                    <button className="p-4 bg-slate-800 text-white rounded-2xl hover:bg-slate-700 transition active:scale-95">
+                                      <Phone className="w-5 h-5" />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+
+                        <section>
                           <h4 className="flex items-center gap-3 text-indigo-900 font-black uppercase tracking-[0.2em] text-xs mb-6">
                             <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
                               <Activity className="w-4 h-4" />
@@ -2889,64 +2946,6 @@ export default function App() {
                             </div>
                           </section>
                         )}
-
-                        <section>
-                          <div className="relative">
-                            <div className="absolute -inset-4 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-rose-500/10 rounded-[48px] blur-2xl"></div>
-                            <div className="relative p-10 bg-[#1A1C1E] rounded-[40px] shadow-2xl overflow-hidden">
-                              <div className="absolute top-0 right-0 p-8 opacity-10">
-                                <Sparkles className="w-24 h-24 text-white" />
-                              </div>
-                              <h4 className="flex items-center gap-3 text-indigo-400 font-bold text-sm mb-6 uppercase tracking-widest">
-                                <Sparkles className="w-4 h-4" /> Propuesta
-                                Ganadora
-                              </h4>
-                              <div className="relative z-10">
-                                <p className="text-white text-xl font-medium leading-relaxed mb-10 pl-6 border-l-2 border-indigo-500/50 italic opacity-90">
-                                  "{activeAnalysis?.pitch}"
-                                </p>
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                  <button
-                                    onClick={() => {
-                                      if (activeAnalysis?.pitch) {
-                                        setOriginalPitchText(
-                                          activeAnalysis.pitch,
-                                        );
-                                        setEditedPitchText(
-                                          activeAnalysis.pitch,
-                                        );
-                                        setIsPitchModalOpen(true);
-                                      }
-                                    }}
-                                    type="button"
-                                    className="flex-1 py-4 bg-white text-slate-900 rounded-2xl font-black text-sm uppercase tracking-wider hover:bg-slate-100 transition shadow-xl active:scale-95 flex items-center justify-center gap-3 group"
-                                  >
-                                    <Mail className="w-5 h-5 group-hover:scale-110 transition" />{" "}
-                                    Copiar para Email
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      setIsPdfModalOpen(true);
-                                    }}
-                                    type="button"
-                                    className="flex-1 py-4 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white rounded-2xl font-black text-sm uppercase tracking-wider transition shadow-xl active:scale-95 flex items-center justify-center gap-3 group cursor-pointer"
-                                  >
-                                    <FileDown className="w-5 h-5 group-hover:scale-110 transition" />{" "}
-                                    Reporte PDF Cliente
-                                  </button>
-                                  <div className="flex gap-4">
-                                    <button className="p-4 bg-slate-800 text-white rounded-2xl hover:bg-slate-700 transition active:scale-95">
-                                      <Database className="w-5 h-5" />
-                                    </button>
-                                    <button className="p-4 bg-slate-800 text-white rounded-2xl hover:bg-slate-700 transition active:scale-95">
-                                      <Phone className="w-5 h-5" />
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </section>
                       </div>
                     ) : (
                       <div className="py-24 text-center">
