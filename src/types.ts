@@ -18,6 +18,7 @@ export interface Lead {
   reminderAt?: string;
   analysisHistory?: Array<{ date: string; analysis: Analysis }>;
   isSimulated?: boolean;
+  offeredServices?: string[];
 }
 
 export interface Analysis {

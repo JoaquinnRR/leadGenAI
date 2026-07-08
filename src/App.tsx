@@ -125,6 +125,15 @@ function formatFriendlyDate(dateValue: string | Date | number): string {
   return `${day} de ${month}, ${year} a las ${hours}:${minutes}`;
 }
 
+export const ADDITIONAL_SERVICES = [
+  { id: "ai_assistant", name: "Asistente Virtual IA", description: "WhatsApp y Web bot 24/7", emoji: "🤖", text: "Integración de un Asistente Virtual con Inteligencia Artificial activo 24/7 por WhatsApp y Web para responder preguntas frecuentes y agendar clientes en tiempo real de manera autónoma." },
+  { id: "appointment_booking", name: "Agendamiento Automático", description: "Reservas de horas en línea", emoji: "📅", text: "Sistema de reservas y agendamiento automático en línea sincronizado con Google Calendar para evitar llamadas manuales y pérdidas de citas." },
+  { id: "crm_integration", name: "CRM de Clientes Inteligente", description: "Seguimiento automático de ventas", emoji: "📈", text: "Implementación de un CRM y embudo de ventas digital automatizado para realizar seguimiento a clientes potenciales por correo y WhatsApp." },
+  { id: "ai_social_media", name: "Generador de Contenido IA", description: "Packs de posts automáticos", emoji: "✍️", text: "Automatización de creación de contenidos, redactando posts para redes sociales y blogs del rubro usando IA generativa de forma calendarizada." },
+  { id: "seo_local", name: "Optimización SEO y Google Maps", description: "Primeras búsquedas zonales", emoji: "📍", text: "Servicio de SEO local y posicionamiento de ficha en Google Business Profile para aparecer arriba de la competencia en búsquedas zonales." },
+  { id: "whatsapp_widget", name: "Widget de WhatsApp Directo", description: "Canal rápido de ventas", emoji: "💬", text: "Botón web interactivo flotante de WhatsApp Directo con mensajes personalizados de inicio para canalizar visitas directamente a tu chat comercial." }
+];
+
 interface AutocompleteSnippet {
   trigger: string;
   label: string;
@@ -305,6 +314,7 @@ export default function App() {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
   const [localSearchTerm, setLocalSearchTerm] = useState("");
+  const [offeredServices, setOfferedServices] = useState<string[]>([]);
   const [visibleLeadsCount, setVisibleLeadsCount] = useState(15);
   const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
   const [editedPitchText, setEditedPitchText] = useState("");
@@ -2305,6 +2315,40 @@ export default function App() {
                                 <StatusBadge status={selectedLead.status} large />
                               </div>
                             </div>
+
+                            {/* Servicios Ofrecidos */}
+                            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col gap-2.5 shadow-sm text-left">
+                              <div>
+                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+                                  Servicios Adicionales
+                                </span>
+                                <span className="text-[10px] font-semibold text-slate-500 block mt-1">
+                                  Servicios extra cotizados
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5 mt-1">
+                                {selectedLead.offeredServices && selectedLead.offeredServices.length > 0 ? (
+                                  selectedLead.offeredServices.map((srvId) => {
+                                    const srv = ADDITIONAL_SERVICES.find((s) => s.id === srvId);
+                                    if (!srv) return null;
+                                    return (
+                                      <span
+                                        key={srvId}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-black"
+                                        title={srv.description}
+                                      >
+                                        <span>{srv.emoji}</span>
+                                        <span>{srv.name}</span>
+                                      </span>
+                                    );
+                                  })
+                                ) : (
+                                  <span className="text-[11px] italic text-slate-400">
+                                    Ninguno cotizado. Edita la propuesta para añadir servicios.
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -2844,6 +2888,9 @@ export default function App() {
                                         setEditedPitchText(
                                           activeAnalysis.pitch,
                                         );
+                                        setOfferedServices(
+                                          selectedLead?.offeredServices || [],
+                                        );
                                         setIsPitchModalOpen(true);
                                       }
                                     }}
@@ -3274,6 +3321,75 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* Servicios Adicionales Section */}
+                  <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-5 space-y-3.5 text-left">
+                    <div>
+                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                        💼 Servicios Adicionales a Incluir
+                      </h4>
+                      <p className="text-[10px] text-slate-400 font-bold leading-none mt-1">
+                        Selecciona los servicios adicionales que ofrecerás a este cliente:
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {ADDITIONAL_SERVICES.map((srv) => {
+                        const isChecked = offeredServices.includes(srv.id);
+                        return (
+                          <label
+                            key={srv.id}
+                            className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                              isChecked
+                                ? "bg-indigo-50/50 border-indigo-200 shadow-sm"
+                                : "bg-white border-slate-100 hover:border-slate-200"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => {
+                                setOfferedServices((prev) =>
+                                  prev.includes(srv.id)
+                                    ? prev.filter((id) => id !== srv.id)
+                                    : [...prev, srv.id]
+                                );
+                              }}
+                              className="mt-1 rounded text-indigo-650 focus:ring-indigo-500 w-3.5 h-3.5"
+                            />
+                            <div>
+                              <span className="text-xs font-black text-slate-800 flex items-center gap-1">
+                                <span>{srv.emoji}</span> {srv.name}
+                              </span>
+                              <span className="text-[10px] text-slate-400 block mt-0.5 font-medium leading-tight">
+                                {srv.description}
+                              </span>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    
+                    {offeredServices.length > 0 && (
+                      <div className="pt-2 border-t border-slate-200 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const servicesText = "\n\nAdicionalmente, propongo que incorporemos:\n" +
+                              offeredServices
+                                .map((id) => {
+                                  const s = ADDITIONAL_SERVICES.find((x) => x.id === id);
+                                  return `- ${s?.emoji} ${s?.name}: ${s?.text}`;
+                                })
+                                .join("\n");
+                            setEditedPitchText((prev) => prev + servicesText);
+                          }}
+                          className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-150 text-indigo-700 hover:text-indigo-850 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer"
+                        >
+                          ✍️ Insertar en Mensaje
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="p-3.5 bg-indigo-50/50 rounded-2xl border border-indigo-100/60 flex items-start gap-2.5">
                     <Sparkles className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
                     <div>
@@ -3501,6 +3617,7 @@ export default function App() {
                               };
                               await handleUpdateCRM(selectedLead.id, {
                                 analysisHistory: updatedHistory,
+                                offeredServices: offeredServices,
                               });
                             }
                           } else {
@@ -3513,6 +3630,7 @@ export default function App() {
                               };
                               await handleUpdateCRM(selectedLead.id, {
                                 analysis: updatedAnalysis,
+                                offeredServices: offeredServices,
                               });
                               setAnalysis(updatedAnalysis);
                             }
@@ -5197,6 +5315,26 @@ function LeadCard({
           />
         </div>
       </div>
+
+      {/* Services offered badges */}
+      {lead.offeredServices && lead.offeredServices.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-4 text-left">
+          {lead.offeredServices.map((srvId) => {
+            const srv = ADDITIONAL_SERVICES.find((s) => s.id === srvId);
+            if (!srv) return null;
+            return (
+              <span
+                key={srvId}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-black"
+                title={srv.description}
+              >
+                <span>{srv.emoji}</span>
+                <span>{srv.name}</span>
+              </span>
+            );
+          })}
+        </div>
+      )}
 
       <div className="flex items-center justify-between border-t border-slate-50 pt-4">
         <div
