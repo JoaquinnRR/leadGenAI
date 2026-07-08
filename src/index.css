@@ -6,31 +6,6 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
-/* Quill Editor Overrides */
-.ql-toolbar.ql-snow {
-  border: none !important;
-  background: #f1f5f9;
-  border-bottom: 1px solid #e2e8f0 !important;
-  padding: 8px 12px !important;
-}
-
-.ql-container.ql-snow {
-  border: none !important;
-  font-family: inherit !important;
-  font-size: 0.875rem !important;
-  min-height: 150px;
-}
-
-.ql-editor {
-  padding: 16px !important;
-}
-
-.ql-editor.ql-blank::before {
-  color: #94a3b8 !important;
-  font-style: normal !important;
-  left: 16px !important;
-}
-
 /* @media print classes for high-fidelity PDF generation */
 @media print {
   /* Hide the rest of the application interface */

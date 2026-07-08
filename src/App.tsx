@@ -1067,6 +1067,12 @@ export default function App() {
             <span className="text-xl font-bold tracking-tight text-slate-800">
               LeadGen <span className="text-indigo-600">AI</span>
             </span>
+            {isSimulated && (
+              <span className="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full border border-amber-200 flex items-center gap-1.5 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                Modo Simulación
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-6">
