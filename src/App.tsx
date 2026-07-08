@@ -2926,18 +2926,6 @@ export default function App() {
 
                         <section>
                           <h4 className="flex items-center gap-3 text-indigo-900 font-black uppercase tracking-[0.2em] text-xs mb-6">
-                            <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                              <Activity className="w-4 h-4" />
-                            </div>
-                            Diagnóstico Digital
-                          </h4>
-                          <div className="p-8 bg-slate-50/50 rounded-[32px] border border-slate-100 text-slate-700 leading-relaxed text-lg">
-                            {activeAnalysis?.analysis}
-                          </div>
-                        </section>
-
-                        <section>
-                          <h4 className="flex items-center gap-3 text-indigo-900 font-black uppercase tracking-[0.2em] text-xs mb-6">
                             <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
                               <Zap className="w-4 h-4" />
                             </div>
@@ -2957,6 +2945,18 @@ export default function App() {
                                 </p>
                               </div>
                             ))}
+                          </div>
+                        </section>
+
+                        <section>
+                          <h4 className="flex items-center gap-3 text-indigo-900 font-black uppercase tracking-[0.2em] text-xs mb-6">
+                            <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                              <Activity className="w-4 h-4" />
+                            </div>
+                            Diagnóstico Digital
+                          </h4>
+                          <div className="p-8 bg-slate-50/50 rounded-[32px] border border-slate-100 text-slate-700 leading-relaxed text-lg">
+                            {activeAnalysis?.analysis}
                           </div>
                         </section>
 
