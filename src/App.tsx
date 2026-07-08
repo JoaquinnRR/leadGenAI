@@ -2864,6 +2864,30 @@ export default function App() {
                         )}
 
                         <section>
+                          <h4 className="flex items-center gap-3 text-indigo-900 font-black uppercase tracking-[0.2em] text-xs mb-6">
+                            <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                              <Zap className="w-4 h-4" />
+                            </div>
+                            Oportunidades de IA
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {activeAnalysis?.useCases.map((useCase, i) => (
+                              <div
+                                key={i}
+                                className="p-6 bg-white border border-slate-100 rounded-[28px] shadow-sm hover:border-indigo-200 transition-all flex gap-4"
+                              >
+                                <div className="flex-shrink-0 w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center text-[10px] font-black text-indigo-600">
+                                  0{i + 1}
+                                </div>
+                                <p className="text-sm text-slate-600 font-medium leading-relaxed">
+                                  {useCase}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </section>
+
+                        <section>
                           <div className="relative mb-8">
                             <div className="absolute -inset-4 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-rose-500/10 rounded-[48px] blur-2xl"></div>
                             <div className="relative p-10 bg-[#1A1C1E] rounded-[40px] shadow-2xl overflow-hidden">
@@ -2921,30 +2945,6 @@ export default function App() {
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </section>
-
-                        <section>
-                          <h4 className="flex items-center gap-3 text-indigo-900 font-black uppercase tracking-[0.2em] text-xs mb-6">
-                            <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
-                              <Zap className="w-4 h-4" />
-                            </div>
-                            Oportunidades de IA
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {activeAnalysis?.useCases.map((useCase, i) => (
-                              <div
-                                key={i}
-                                className="p-6 bg-white border border-slate-100 rounded-[28px] shadow-sm hover:border-indigo-200 transition-all flex gap-4"
-                              >
-                                <div className="flex-shrink-0 w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center text-[10px] font-black text-indigo-600">
-                                  0{i + 1}
-                                </div>
-                                <p className="text-sm text-slate-600 font-medium leading-relaxed">
-                                  {useCase}
-                                </p>
-                              </div>
-                            ))}
                           </div>
                         </section>
 
