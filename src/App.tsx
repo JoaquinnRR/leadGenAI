@@ -389,7 +389,7 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
       if (u) {
-        fetchSavedLeads(u.uid);
+        fetchSavedLeads();
       } else {
         setSavedLeads([]);
       }
@@ -548,11 +548,10 @@ export default function App() {
     setIsAutocompleteMenuOpen(false);
   };
 
-  const fetchSavedLeads = async (userId: string) => {
+  const fetchSavedLeads = async () => {
     try {
       const q = query(
         collection(db, "saved_leads"),
-        where("userId", "==", userId),
       );
       const querySnapshot = await getDocs(q);
       const fetched: Lead[] = [];

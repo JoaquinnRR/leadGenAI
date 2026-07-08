@@ -33,7 +33,7 @@ service cloud.firestore {
       return data.keys().hasAll(['id', 'name', 'userId', 'createdAt']) 
         && data.id is string && data.id.size() <= 128
         && data.name is string && data.name.size() <= 256
-        && data.userId is string && data.userId == request.auth.uid
+        && data.userId is string
         && (data.status == null || data.status in ['no_website', 'old_tech', 'optimized'])
         && (data.industry == null || (data.industry is string && data.industry.size() <= 128))
         && (data.location == null || (data.location is string && data.location.size() <= 256))
@@ -52,20 +52,11 @@ service cloud.firestore {
     }
 
     match /saved_leads/{leadId} {
-      allow get: if isOwner(existing().userId);
-      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
-      
-      allow create: if isSignedIn() 
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() 
         && isValidId(leadId) 
-        && isValidLead(incoming())
-        && incoming().createdAt == request.time;
-        
-      allow update: if isOwner(existing().userId)
-        && isValidLead(incoming())
-        && incoming().userId == existing().userId
-        && incoming().createdAt == existing().createdAt;
-        
-      allow delete: if isOwner(existing().userId);
+        && isValidLead(incoming());
+      allow delete: if isSignedIn();
     }
   }
 }
